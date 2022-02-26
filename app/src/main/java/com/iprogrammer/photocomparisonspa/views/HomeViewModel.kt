@@ -21,8 +21,9 @@ class HomeViewModel(
 
     fun getAllPhotos() {
         photoDetailsListener?.onStarted()
-        try {
-            Coroutines.main {
+
+        Coroutines.main {
+            try {
                 val response = photoDetailsRepository.getAllPhotosRepository()
                 if (response.isNullOrEmpty()) {
                     photoDetailsListener?.onFailed("Something went wrong")
@@ -30,20 +31,22 @@ class HomeViewModel(
                 }
                 photoDetailsRepository.insertPhotoListDetails(response)
                 photoDetailsListener?.onSuccess()
+
+            } catch (e: NoIntenetException) {
+                Log.e(TAG, "NoInternetException-", e)
+                photoDetailsListener?.onFailed(e.message!!)
+            } catch (e: ServerUnreachableException) {
+                Log.e(TAG, "ServerUnreachableException-", e)
+                photoDetailsListener?.onFailed(e.message!!)
+            } catch (e: ApiException) {
+                Log.e(TAG, "ApiException-", e)
+                photoDetailsListener?.onFailed(e.message!!)
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception-", e)
+                photoDetailsListener?.onFailed("Something went wrong")
             }
-        } catch (e: NoIntenetException) {
-            Log.e(TAG, "NoInternetException-", e)
-            photoDetailsListener?.onFailed(e.message!!)
-        } catch (e: ServerUnreachableException) {
-            Log.e(TAG, "ServerUnreachableException-", e)
-            photoDetailsListener?.onFailed(e.message!!)
-        } catch (e: ApiException) {
-            Log.e(TAG, "ApiException-", e)
-            photoDetailsListener?.onFailed(e.message!!)
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception-", e)
-            photoDetailsListener?.onFailed("Something went wrong")
         }
+
     }
 
     fun updateFlag(photoId: Int) {

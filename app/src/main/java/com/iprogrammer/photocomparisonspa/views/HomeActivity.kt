@@ -42,6 +42,7 @@ class HomeActivity : AppCompatActivity(), KodeinAware, PhotoDetailsListener,
             this.lifecycleOwner = this@HomeActivity
             this.viewModel = viewModel
         }
+
         viewModel?.photoDetailsListener = this
         viewModel?.getPhotoList()?.observe(this, Observer { details ->
             if (details.isNullOrEmpty()) {
